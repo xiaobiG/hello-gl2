@@ -76,6 +76,15 @@ GLuint loadShader(GLenum shaderType, const char* pSource) {
   return shader;
 }
 
+/**
+用于创建着色器程序对象。它的输入参数是两个字符串，分别代表了顶点着色器和像素着色器的源码。
+
+函数的第一步是调用loadShader函数来加载并编译顶点着色器和像素着色器。
+如果加载或编译失败，则返回0，表示创建着色器程序对象失败。
+如果顶点着色器和像素着色器都成功加载和编译，那么接下来就会创建一个新的着色器程序对象，并将顶点着色器和像素着色器附加到该对象上。
+然后，使用glLinkProgram将它们链接在一起，最后检查链接过程是否成功。
+如果链接成功，函数返回新创建的着色器程序对象的句柄，否则返回0。如果链接失败，函数将打印出错误信息并释放已经创建的着色器程序对象。
+ */
 GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
   GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
   if (!vertexShader) {
@@ -117,6 +126,14 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
 GLuint gProgram;
 GLuint gvPositionHandle;
 
+/**
+该函数以屏幕宽度和高度为输入参数，并返回布尔值，指示设置是否成功。
+
+函数开始时，调用printGLString()函数打印OpenGL实现的版本、供应商、渲染器和扩展名等信息。
+接下来，函数使用gVertexShader和gFragmentShader变量创建一个程序。如果程序创建失败，则记录错误消息并返回false。
+然后，函数使用glGetAttribLocation()检索程序中"vPosition"属性的位置，并将其存储在gvPositionHandle变量中。同时，函数使用checkGlError()检查是否有任何错误。
+最后，函数将视口设置为屏幕的尺寸，并使用checkGlError()检查是否有任何错误。函数返回true，表示设置成功。
+ */
 bool setupGraphics(int w, int h) {
   printGLString("Version", GL_VERSION);
   printGLString("Vendor", GL_VENDOR);
@@ -138,8 +155,17 @@ bool setupGraphics(int w, int h) {
   return true;
 }
 
+// 包含三角形顶点位置信息的数组。三角形顶点的坐标分别为 (0.0, 0.5)，(-0.5,-0.5)，(0.5,-0.5)
 const GLfloat gTriangleVertices[] = {0.0f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f};
 
+/**
+首先通过改变背景颜色的灰度值每帧增加一定量的灰度值，以产生灰度不断变化的效果。然后使用 glClearColor 函数清除深度缓冲区和颜色缓冲区。
+接着调用 glUseProgram 函数选择要使用的程序对象，即 gProgram。
+然后使用 glVertexAttribPointer 函数指定要绘制的图形的顶点数据，并启用它们。
+最后使用 glDrawArrays 函数指定要绘制的图元类型和数量，即三角形。
+
+在这段代码中还有几次调用 checkGlError 函数，用于检查 OpenGL ES 函数是否出错。
+ */
 void renderFrame() {
   static float grey;
   grey += 0.01f;

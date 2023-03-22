@@ -8,7 +8,7 @@ android {
     
     defaultConfig {
         applicationId 'com.android.gl2jni'
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 33
         externalNativeBuild {
             cmake {
@@ -33,3 +33,6 @@ android {
     namespace 'com.android.gl2jni'
 }
 
+dependencies {
+    implementation 'androidx.core:core:1.9.0'
+}
